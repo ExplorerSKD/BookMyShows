@@ -526,7 +526,7 @@ BookMyShow Team
     image.add_header('Content-ID', '<qrcode_image>')
     msg.attach(image)
     
-    msg.send(fail_silently=False)
+    msg.send(fail_silently=True)
 
 
 def send_show_reminder_email(user, booking):
