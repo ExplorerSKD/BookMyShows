@@ -711,14 +711,16 @@ def register_view(request):
             request.session['user_id'] = user.id
             
             # Send OTP email
-            send_mail(
-                'Verify your account - BookMyShow',
-                f'Your OTP is: {otp}',
-                settings.DEFAULT_FROM_EMAIL,
-                [user.email],
-                fail_silently=False,
-            )
-            
+            try:
+                send_mail(
+                    'Verify your account - BookMyShow',
+                    f'Your OTP is: {otp}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=True,   # ✅ MUST be True
+                )
+            except Exception as e:
+                print("OTP email failed:", e)            
             return redirect('verify_otp')
     else:
         form = UserRegistrationForm()
