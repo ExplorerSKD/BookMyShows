@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Organizer Dashboard - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>Organizer Dashboard</h1>
+            <div style="display: flex; gap: 1rem;">
+                <a href="{% url 'wallet_view' %}" class="btn btn-secondary">
+                    <i class="fas fa-wallet"></i> Wallet: ₹{{ wallet_balance }}
+                </a>
+                <a href="{% url 'organizer_movie_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Movie
+                </a>
+            </div>
+        </div>
+
+        <!-- Analytics Cards -->
+        <div class="dashboard-layout"
+            style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="dashboard-section" style="text-align: center;">
+                <h3 style="margin: 0; color: #555;">Total Revenue</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #2ecc71; margin: 0.5rem 0;">₹{{ total_revenue }}
+                </p>
+            </div>
+            <div class="dashboard-section" style="text-align: center;">
+                <h3 style="margin: 0; color: #555;">Total Tickets Sold</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #3498db; margin: 0.5rem 0;">{{ total_tickets }}</p>
+            </div>
+            <div class="dashboard-section" style="text-align: center;">
+                <h3 style="margin: 0; color: #555;">Active Movies</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #9b59b6; margin: 0.5rem 0;">{{ movies.count }}</p>
+            </div>
+        </div>
+
+        <!-- Movies Management -->
+        <div class="dashboard-section">
+            <h2>Your Movies</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Genre</th>
+                        <th>Shows</th>
+                        <th>Bookings</th>
+                        <th>Revenue</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for movie in movies %}
+                    <tr {% if movie.is_promoted %}style="background-color: #fff3cd;" {% endif %}>
+                        <td>
+                            <strong>{{ movie.title }}</strong>
+                            {% if movie.is_promoted %}
+                            <span class="badge badge-confirmed" style="margin-left: 0.5rem;">Promoted</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ movie.genre }}</td>
+                        <td>{{ movie.total_shows }}</td>
+                        <td>{{ movie.total_bookings }}</td>
+                        <td>₹{{ movie.revenue|default:"0.00" }}</td>
+                        <td>
+                            {% if movie.is_promoted %}
+                            <span style="color: #856404;">Ad Active</span>
+                            {% else %}
+                            <form method="post" action="{% url 'promote_movie' movie.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-secondary"
+                                    style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">
+                                    Promote (₹500)
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'organizer_movie_edit' movie.id %}" class="btn btn-sm btn-primary"
+                                style="margin-right: 0.5rem;">Edit</a>
+                            <a href="{% url 'organizer_movie_delete' movie.id %}"
+                                class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            No movies found. <a href="{% url 'organizer_movie_create' %}">Create your first movie!</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

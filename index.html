@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies - BookMyShow</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        window.BACKEND_BASE_URL = window.BACKEND_BASE_URL || '';
+        try {
+            const el = document.querySelector('meta[name="backend-base-url"]');
+            if (el && el.content) { window.BACKEND_BASE_URL = el.content; }
+        } catch (e) {}
+    </script>
+    <meta name="backend-base-url" content="">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a class="nav-brand-link">
+                    <span class="brand-logo"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="brand-text">BookMySeat</span>
+                </a>
+            </div>
+            <div class="nav-links nav-right">
+                <a href="/">Home</a>
+                <a href="#" onclick="openBackend('/movies/')">Backend Movies</a>
+                <a href="#" onclick="openBackend('/login/')">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="movies-3d-scene">
+            <div class="bg-shapes">
+                <span class="orb orb-red"></span>
+                <span class="orb orb-blue"></span>
+                <span class="orb orb-gold"></span>
+                <span class="orb orb-purple"></span>
+            </div>
+            <div class="container movies-page">
+                <div class="movies-header">
+                    <h1>Now Showing</h1>
+
+                    <div class="search-section">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="movieSearch" class="search-input" placeholder="Search movies by title..." autocomplete="off">
+                            <button type="button" id="clearSearch" class="clear-search" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filters filters-3d">
+                        <form method="GET" class="filter-form" id="movieFilterForm">
+                            <div class="filter-group">
+                                <label for="genre">Genre:</label>
+                                <select name="genre" id="genre">
+                                    <option value="">All Genres</option>
+                                </select>
+                            </div>
+    
+                            <div class="filter-group">
+                                <label for="language">Language:</label>
+                                <select name="language" id="language">
+                                    <option value="">All Languages</option>
+                                </select>
+                            </div>
+    
+                            <button type="button" class="btn-clear-filters" id="clearFiltersBtn">Clear Filters</button>
+                        </form>
+                    </div>
+                </div>
+            
+                <div class="movies-grid" id="moviesGrid"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <p>We provide the best movie experience in town.<br>Book your tickets now and enjoy the show!</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#" onclick="openBackend('/movies/')">Movies</a></li>
+                        <li><a href="#" onclick="openBackend('/register/')">Register</a></li>
+                        <li><a href="#" onclick="openBackend('/contact/')">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Follow Us</h3>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cinema Booking. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/scripts.js"></script>
+    <script>
+        function openBackend(path) {
+            var base = (window.BACKEND_BASE_URL || '').replace(/\/+$/, '');
+            if (!base) {
+                alert('Set window.BACKEND_BASE_URL to your Render backend URL.');
+                return;
+            }
+            window.location.href = base + path;
+        }
+        // Trigger initial load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force first fetch to render movies
+            fetchFilteredMovies();
+        });
+    </script>
+</body>
+</html>

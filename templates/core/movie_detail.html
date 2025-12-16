@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ movie.title }} - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="movie-detail">
+        <div class="movie-detail-header">
+            {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster-large">
+            {% else %}
+                <div class="movie-poster-placeholder-large">
+                    <span>{{ movie.title|slice:":1" }}</span>
+                </div>
+            {% endif %}
+            
+            <div class="movie-detail-info">
+                <h1>{{ movie.title }}
+                    {% if movie.is_promoted %}
+                        <span class="promoted-badge-detail">★ FEATURED</span>
+                    {% endif %}
+                </h1>
+                <div class="movie-meta-large">
+                    <span class="badge">{{ movie.genre }}</span>
+                    <span class="badge">{{ movie.language }}</span>
+                    <span class="badge">{{ movie.duration_mins }} mins</span>
+                </div>
+                {% if movie.organizer %}
+                    <div class="organizer-info">
+                        <p><strong>Organized by:</strong> {{ movie.organizer.username }}</p>
+                    </div>
+                {% endif %}
+                <p class="movie-description">{{ movie.description }}</p>
+                <div class="movie-actions">
+                    <a href="#shows" class="btn btn-primary">View Shows</a>
+                    {% if movie.trailer_url %}
+                        <a href="{{ movie.trailer_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Watch Trailer</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if movie.trailer_url %}
+        <div class="movie-trailer">
+            <h2>Trailer</h2>
+            <div class="trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                {% if movie.get_trailer_thumbnail_url %}
+                    <a href="{{ movie.trailer_url }}" target="_blank" rel="noopener noreferrer" style="display: block;">
+                        <img src="{{ movie.get_trailer_thumbnail_url }}" alt="{{ movie.title }} trailer"
+                             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                        <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); color: #fff; padding: 0.75rem 1.5rem; border-radius: 999px; font-weight: bold;">
+                            ▶ Play Trailer
+                        </span>
+                    </a>
+                {% else %}
+                    <a href="{{ movie.trailer_url }}" target="_blank" rel="noopener noreferrer" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 0.75rem 1.5rem; background: #e74c3c; color: #fff; border-radius: 999px; font-weight: bold; text-decoration: none;">
+                        ▶ Play Trailer
+                    </a>
+                {% endif %}
+            </div>
+            <p style="margin-top: 0.75rem; font-size: 0.9rem;">
+                Trailer opens in a new tab on YouTube.
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="movie-shows" id="shows">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Upcoming Shows</h2>
+                <p class="section-subtitle">Select a show to book your tickets</p>
+            </div>
+            {% if shows %}
+                <div class="shows-list">
+                    {% for show in shows %}
+                        <div class="show-card enhanced">
+                            <div class="show-info">
+                                <h3>{{ show.screen.cinema.name }}</h3>
+                                <p class="cinema-address">{{ show.screen.cinema.address }}</p>
+                                <p class="screen-name">{{ show.screen.name }}</p>
+                            </div>
+                            <div class="show-details">
+                                <p class="show-date"><i class="fas fa-calendar-day"></i> {{ show.date|date:"D, d M Y" }}</p>
+                                <p class="show-time"><i class="fas fa-clock"></i> {{ show.start_time|time:"h:i A" }}</p>
+                                <p class="show-price">₹{{ show.price }}</p>
+                            </div>
+                            <div class="show-action">
+                                <a href="{% url 'show_page' show.id %}" class="btn btn-primary">Select Seats</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-shows-container">
+                    <i class="fas fa-film" style="font-size: 3rem; color: #ddd; margin-bottom: 1rem;"></i>
+                    <p class="no-shows">No upcoming shows available for this movie.</p>
+                    <p class="no-shows-subtext">Please check back later for new showtimes.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

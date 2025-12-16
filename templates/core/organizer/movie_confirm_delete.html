@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete Movie - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-card" style="text-align: center;">
+            <h2 style="color: #e74c3c;">Delete Movie?</h2>
+            <p>Are you sure you want to delete <strong>"{{ movie.title }}"</strong>?</p>
+            <p style="color: #666; font-size: 0.9rem;">This action cannot be undone. All shows and bookings associated
+                with this movie will also be affected.</p>
+
+            <form method="post" style="margin-top: 2rem;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-block">Yes, Delete Movie</button>
+                <a href="{% url 'organizer_dashboard' %}" class="btn btn-secondary btn-block"
+                    style="margin-top: 1rem; display: block; text-decoration: none;">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

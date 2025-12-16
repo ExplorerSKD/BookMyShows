@@ -1,0 +1,26 @@
+<div class="movies-grid" id="moviesGrid">
+    {% for movie in movies %}
+        <div class="movie-card{% if movie.is_promoted %} promoted{% endif %}">
+            {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster">
+            {% else %}
+                <div class="movie-poster-placeholder">
+                    <span>{{ movie.title|slice:":1" }}</span>
+                </div>
+            {% endif %}
+            <div class="movie-info">
+                <h3>{{ movie.title }}{% if movie.is_promoted %} <span class="promoted-badge">★ Promoted</span>{% endif %}</h3>
+                <p class="movie-meta">
+                    <span class="genre">{{ movie.genre }}</span> |
+                    <span class="language">{{ movie.language }}</span> |
+                    <span class="duration">{{ movie.duration_mins }} mins</span>
+                </p>
+                <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary">Book Tickets</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-movies">
+            <p>No movies found matching your criteria.</p>
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+{% load qr_tags %}
+
+{% block title %}My Bookings - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <h1>My Bookings</h1>
+
+        {% if bookings %}
+        <div class="bookings-list">
+            {% for booking in bookings %}
+            <div class="booking-card {% if booking.status == 'cancelled' %}cancelled{% endif %}">
+                <div class="booking-header">
+                    <h3>{{ booking.show.movie.title }}</h3>
+                    <span class="booking-status status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                </div>
+                <div class="booking-details">
+                    <div class="booking-info">
+                        <p><strong>Booking ID:</strong> {{ booking.booking_id }}</p>
+                        <p><strong>Cinema:</strong> {{ booking.show.screen.cinema.name }}</p>
+                        <p><strong>Screen:</strong> {{ booking.show.screen.name }}</p>
+                        <p><strong>Date:</strong> {{ booking.show.date|date:"D, d M Y" }}</p>
+                        <p><strong>Time:</strong> {{ booking.show.start_time|time:"h:i A" }}</p>
+                        <p><strong>Seats:</strong> {{ booking.get_seats_list|join:", " }}</p>
+                        <p><strong>Total Amount:</strong> ₹{{ booking.total_amount }}</p>
+                        <p><strong>Booked On:</strong> {{ booking.created_at|date:"d M Y, h:i A" }}</p>
+                    </div>
+                    <div class="booking-qr">
+                        <img src="data:image/png;base64,{% generate_qr booking.booking_id %}" alt="Booking QR Code"
+                            style="width: 150px; height: 150px;">
+                        <p style="text-align: center; font-size: 0.8rem; color: #777; margin-top: 5px;">Scan at entry
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-bookings">
+            <p>You haven't made any bookings yet.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary">Browse Movies</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Organizer Wallet - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1><i class="fas fa-wallet"></i> My Wallet</h1>
+            <a href="{% url 'organizer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+
+        <div class="dashboard-layout" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Balance Section -->
+            <div class="dashboard-section"
+                style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <h2 style="color: #555;">Current Balance</h2>
+                <div style="font-size: 3.5rem; font-weight: bold; color: #2ecc71; margin: 1rem 0;">
+                    ₹{{ wallet.balance }}
+                </div>
+                <p style="color: #777;">Use these funds to run ads and promote your movies.</p>
+            </div>
+
+            <!-- Add Funds Section -->
+            <div class="dashboard-section">
+                <h2>Add Funds</h2>
+                <p>Top up your wallet instantly.</p>
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" min="100" step="100"
+                            placeholder="Enter amount (e.g. 1000)" required>
+                    </div>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem;">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('amount').value=500">₹500</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('amount').value=1000">₹1000</button>
+                        <button type="button" class="btn btn-secondary"
+                            onclick="document.getElementById('amount').value=5000">₹5000</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-plus-circle"></i> Add Funds
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="dashboard-section" style="margin-top: 2rem;">
+            <h2><i class="fas fa-info-circle"></i> About Promotions</h2>
+            <p>Promoting a movie costs <strong>₹500</strong> per movie. Promoted movies appear at the top of the
+                organizer dashboard and get highlighted status.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

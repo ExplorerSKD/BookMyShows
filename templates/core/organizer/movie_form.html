@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }} - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container" style="max-width: 800px;">
+        <div class="auth-card">
+            <h2>{{ title }}</h2>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="error-feedback">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary btn-block">Save Movie</button>
+                    <a href="{% url 'organizer_dashboard' %}" class="btn btn-secondary btn-block"
+                        style="text-align: center; text-decoration: none;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for form inputs to match the theme */
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #e74c3c;
+        outline: none;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Register - BookMyShow{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* 2. Unified CSS Theme */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f2f5;
+        /* Matches Login Gradient */
+        background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    /* Centering Wrapper */
+    .register-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px; /* More padding top/bottom for scrolling */
+    }
+
+    /* The Main Card */
+    .auth-container {
+        background: #ffffff;
+        width: 100%;
+        max-width: 500px; /* Slightly wider than login for better form layout */
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+
+    /* Header */
+    .auth-container h1 {
+        text-align: center;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 30px;
+        margin-top: 0;
+        font-size: 2rem;
+    }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #444;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    /* Inputs & Selects */
+    .form-group input, 
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e1e1;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+        background-color: #fff;
+    }
+
+    .form-group input:focus, 
+    .form-group select:focus {
+        border-color: #764ba2;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+    }
+
+    /* Help Text styling */
+    .form-help {
+        display: block;
+        font-size: 0.8rem;
+        color: #888;
+        margin-top: 6px;
+        line-height: 1.4;
+    }
+
+    /* Info Alert Box for Role Help Text */
+    .info-alert {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 8px;
+    }
+    
+    .info-alert .form-help {
+        color: #0d47a1;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Error Styling */
+    .form-errors {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+    
+    .errorlist {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(to right, #667eea, #764ba2);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+    }
+
+    /* Link Switch */
+    .auth-switch {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    a {
+        color: #764ba2;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    a:hover {
+        color: #5a387e;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="auth-container">
+        <h1>Create Account</h1>
+        
+        <form method="POST" class="auth-form" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="form-errors">{{ form.username.errors }}</div>
+                {% endif %}
+                <small class="form-help">{{ form.username.help_text }}</small>
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="form-errors">{{ form.email.errors }}</div>
+                {% endif %}
+                <small class="form-help">{{ form.email.help_text }}</small>
+            </div>
+
+            <div class="form-group">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="form-errors">{{ form.password1.errors }}</div>
+                {% endif %}
+                <small class="form-help">{{ form.password1.help_text }}</small>
+            </div>
+
+            <div class="form-group">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="form-errors">{{ form.password2.errors }}</div>
+                {% endif %}
+                <small class="form-help">{{ form.password2.help_text }}</small>
+            </div>
+
+            <div class="form-group">
+                {{ form.role.label_tag }}
+                <div class="role-options">
+                    {{ form.role }}
+                </div>
+                {% if form.role.errors %}
+                    <div class="form-errors">{{ form.role.errors }}</div>
+                {% endif %}
+                
+                <div class="info-alert">
+                    <small class="form-help">
+                        Note: Organizer and staff accounts require manual admin approval before dashboards unlock.
+                    </small>
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="form-errors" style="margin-bottom: 20px; text-align: center;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

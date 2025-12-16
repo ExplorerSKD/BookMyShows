@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Profile - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h1>My Profile</h1>
+            <div>
+                <a href="{% url 'my_bookings' %}" class="btn btn-secondary">My Bookings</a>
+            </div>
+        </div>
+
+        <div class="dashboard-layout" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="dashboard-section">
+                <h2>Account Details</h2>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                {% if profile %}
+                <p><strong>Role:</strong> {{ profile.role }}</p>
+                <p><strong>Role Status:</strong> {% if profile.is_role_approved %}Approved{% else %}Pending Approval{% endif %}</p>
+                {% endif %}
+            </div>
+
+            <div class="dashboard-section">
+                <h2>Overview</h2>
+                <p><strong>Total Bookings:</strong> {{ total_bookings }}</p>
+                {% if wallet_balance is not None %}
+                <p><strong>Wallet Balance:</strong> ₹{{ wallet_balance }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if upcoming %}
+        <div class="dashboard-section" style="margin-top: 1.5rem;">
+            <h2>Upcoming Shows</h2>
+            <div class="shows-list">
+                {% for booking in upcoming %}
+                <div class="show-card enhanced">
+                    <div class="show-info">
+                        <h3>{{ booking.show.movie.title }}</h3>
+                        <p class="screen-name">{{ booking.show.screen.cinema.name }} - {{ booking.show.screen.name }}</p>
+                    </div>
+                    <div class="show-details">
+                        <p class="show-date">{{ booking.show.date|date:"D, d M Y" }}</p>
+                        <p class="show-time">{{ booking.show.start_time|time:"h:i A" }}</p>
+                        <p class="show-price">₹{{ booking.total_amount }}</p>
+                    </div>
+                    <div class="show-action">
+                        <a href="{% url 'my_bookings' %}" class="btn btn-primary">View Ticket</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

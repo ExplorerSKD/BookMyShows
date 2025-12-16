@@ -1,0 +1,137 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Movies - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="movies-3d-scene">
+    <div class="bg-shapes">
+        <span class="orb orb-red"></span>
+        <span class="orb orb-blue"></span>
+        <span class="orb orb-gold"></span>
+        <span class="orb orb-purple"></span>
+    </div>
+    <div class="container movies-page">
+        <div class="movies-header">
+            <h1>Now Showing</h1>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="movieSearch" class="search-input" placeholder="Search movies by title..."
+                        autocomplete="off">
+                    <button type="button" id="clearSearch" class="clear-search" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="filters filters-3d">
+                <form method="GET" class="filter-form" id="movieFilterForm">
+                    <div class="filter-group">
+                        <label for="genre">Genre:</label>
+                        <select name="genre" id="genre">
+                            <option value="">All Genres</option>
+                            {% for genre_code, genre_name in genres %}
+                            <option value="{{ genre_code }}" {% if selected_genre == genre_code %}selected{% endif %}>
+                                {{ genre_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="language">Language:</label>
+                        <select name="language" id="language">
+                            <option value="">All Languages</option>
+                            {% for lang_code, lang_name in languages %}
+                            <option value="{{ lang_code }}" {% if selected_language == lang_code %}selected{% endif %}>
+                                {{ lang_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% if selected_genre or selected_language %}
+                    <button type="button" class="btn-clear-filters" id="clearFiltersBtn">Clear Filters</button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% include 'core/_movies_grid.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('movieSearch');
+        const clearBtn = document.getElementById('clearSearch');
+        const moviesGrid = document.getElementById('moviesGrid');
+        const movieCards = moviesGrid ? moviesGrid.querySelectorAll('.movie-card') : [];
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const searchTerm = this.value.toLowerCase().trim();
+
+                // Show/hide clear button
+                if (clearBtn) {
+                    clearBtn.style.display = searchTerm ? 'flex' : 'none';
+                }
+
+                let visibleCount = 0;
+
+                movieCards.forEach(card => {
+                    const titleElement = card.querySelector('.movie-info h3');
+                    const title = titleElement ? titleElement.textContent.toLowerCase() : '';
+
+                    if (title.includes(searchTerm)) {
+                        card.style.display = '';
+                        card.style.animation = 'fadeIn 0.3s ease';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Handle no results message
+                let noResults = moviesGrid.querySelector('.no-search-results');
+                if (visibleCount === 0 && searchTerm) {
+                    if (!noResults) {
+                        noResults = document.createElement('div');
+                        noResults.className = 'no-movies no-search-results';
+                        noResults.innerHTML = '<p>No movies found matching "<strong>' + searchTerm + '</strong>"</p>';
+                        moviesGrid.appendChild(noResults);
+                    }
+                } else if (noResults) {
+                    noResults.remove();
+                }
+            });
+
+            // Clear search
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function () {
+                    searchInput.value = '';
+                    searchInput.dispatchEvent(new Event('input'));
+                    searchInput.focus();
+                });
+            }
+        }
+    });
+</script>
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

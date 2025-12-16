@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Scan Tickets - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-container">
+        <h1><i class="fas fa-qrcode"></i> Scan Tickets</h1>
+        <p style="margin-bottom: 1.5rem; color: #555;">
+            Scan a QR code or enter the booking ID to validate a ticket.
+        </p>
+
+        <div class="dashboard-layout" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Scanner Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-camera"></i> Scan QR Code</h2>
+
+                <div id="reader"
+                    style="width: 100%; min-height: 300px; background: #eee; border-radius: 8px; overflow: hidden;">
+                </div>
+
+                <div style="margin-top: 1rem; text-align: center;">
+                    <input type="file" id="qr-input-file" accept="image/*" style="display: none;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('qr-input-file').click()">
+                        <i class="fas fa-upload"></i> Upload QR Image
+                    </button>
+                    <button class="btn btn-primary" id="start-camera-btn">
+                        <i class="fas fa-video"></i> Start Camera
+                    </button>
+                    <button class="btn btn-danger" id="stop-camera-btn" style="display: none;">
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+            </div>
+
+            <!-- Manual Entry Section -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-keyboard"></i> Manual Entry</h2>
+                <form method="post" class="auth-form" id="scan-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="booking_code">Booking Code</label>
+                        <input type="text" id="booking_code" name="booking_code"
+                            placeholder="e.g. 123e4567 or full UUID" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Validate Ticket</button>
+                </form>
+
+                {% if error %}
+                <div class="message message-error" style="margin-top: 1rem;">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                {% if booking %}
+                <div class="dashboard-section" style="margin-top: 2rem; border: 2px solid #2ecc71;">
+                    <h2 style="color: #27ae60;"><i class="fas fa-check-circle"></i> Valid Ticket</h2>
+                    <div class="ticket-details">
+                        <p><strong>Booking ID:</strong> {{ booking.booking_id }}</p>
+                        <p><strong>User:</strong> {{ booking.user.username }}</p>
+                        <p><strong>Movie:</strong> {{ booking.show.movie.title }}</p>
+                        <p><strong>Cinema:</strong> {{ booking.show.screen.cinema.name }}</p>
+                        <p><strong>Screen:</strong> {{ booking.show.screen.name }}</p>
+                        <p><strong>Date:</strong> {{ booking.show.date|date:"d M Y" }}</p>
+                        <p><strong>Time:</strong> {{ booking.show.start_time|time:"h:i A" }}</p>
+                        <p><strong>Seats:</strong> {{ booking.get_seats_list|join:", " }}</p>
+                        <p><strong>Status:</strong> <span class="badge badge-{{ booking.status }}">{{ booking.get_status_display }}</span></p>
+                    </div>
+
+                    {% if booking.status == 'confirmed' %}
+                    <form method="post" style="margin-top: 1.5rem;">
+                        {% csrf_token %}
+                        <input type="hidden" name="booking_code" value="{{ booking.booking_id }}">
+                        <input type="hidden" name="action" value="mark_used">
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-check-double"></i> Mark as Used
+                        </button>
+                    </form>
+                    {% elif booking.status == 'used' %}
+                    <div
+                        style="margin-top: 1.5rem; padding: 1rem; background: #f8d7da; color: #721c24; border-radius: 8px; text-align: center; font-weight: bold;">
+                        <i class="fas fa-exclamation-triangle"></i> This ticket has already been used.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    const html5QrCode = new Html5Qrcode("reader");
+    const fileInput = document.getElementById('qr-input-file');
+    const startBtn = document.getElementById('start-camera-btn');
+    const stopBtn = document.getElementById('stop-camera-btn');
+    const bookingInput = document.getElementById('booking_code');
+    const form = document.getElementById('scan-form');
+
+    // File Upload Scan
+    fileInput.addEventListener('change', e => {
+        if (e.target.files.length == 0) {
+            return;
+        }
+        const imageFile = e.target.files[0];
+        // Scan QR Code
+        html5QrCode.scanFile(imageFile, true)
+            .then(decodedText => {
+                // success
+                bookingInput.value = decodedText;
+                form.submit();
+            })
+            .catch(err => {
+                // failure
+                alert(`Error scanning file: ${err}`);
+            });
+    });
+
+    // Camera Scan
+    startBtn.addEventListener('click', () => {
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .then(() => {
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+            })
+            .catch(err => {
+                alert(`Error starting camera: ${err}`);
+            });
+    });
+
+    stopBtn.addEventListener('click', () => {
+        html5QrCode.stop().then(() => {
+            startBtn.style.display = 'inline-block';
+            stopBtn.style.display = 'none';
+        }).catch(err => {
+            console.log(err);
+        });
+    });
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Handle the scanned code
+        html5QrCode.stop().then(() => {
+            bookingInput.value = decodedText;
+            form.submit();
+        });
+    }
+</script>
+{% endblock %}

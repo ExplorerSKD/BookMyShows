@@ -1,0 +1,265 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Login - BookMyShow{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* 2. Custom CSS for this page */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f0f2f5;
+        /* Optional: Add a subtle background image here */
+        background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    /* Centering Wrapper */
+    .login-wrapper {
+        min-height: 85vh; /* Leaves space for header/footer */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    /* The Main Card */
+    .auth-container {
+        background: #ffffff;
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Header Styling */
+    .auth-container h1 {
+        text-align: center;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 2rem;
+    }
+
+    .auth-subtitle {
+        text-align: center;
+        color: #666;
+        margin-top: 0;
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+    }
+
+    /* Organizer Feature Box Styling */
+    .organizer-features {
+        background: #f0f7ff;
+        border-left: 5px solid #2196f3;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .organizer-features h3 {
+        margin: 0 0 15px 0;
+        color: #1565c0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .feature-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        color: #444;
+    }
+
+    .check-icon {
+        background: #2196f3;
+        color: white;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #444;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    /* Target Django Input Fields */
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e1e1;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box; /* Important for padding */
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #764ba2;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+    }
+
+    /* Error Styling */
+    .form-errors {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(to right, #667eea, #764ba2);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+    }
+
+    /* Link Styling */
+    .auth-switch {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .auth-portal-links {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        text-align: center;
+    }
+
+    .auth-portal-links p {
+        margin: 8px 0;
+        font-size: 0.85rem;
+        color: #888;
+    }
+
+    a {
+        color: #764ba2;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    a:hover {
+        color: #5a387e;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="auth-container">
+        <h1>{{ login_heading|default:"Login" }}</h1>
+        
+        {% if login_subtitle %}
+            <p class="auth-subtitle">{{ login_subtitle }}</p>
+        {% endif %}
+        
+        {% if portal_role == 'ORGANIZER' %}
+        <div class="organizer-features">
+            <h3>For event organizers & theatres:</h3>
+            <ul class="feature-list">
+                <li><span class="check-icon">✓</span>Create events & Add shows</li>
+                <li><span class="check-icon">✓</span>Manage seat layouts</li>
+                <li><span class="check-icon">✓</span>Check real-time sales reports</li>
+                <li><span class="check-icon">✓</span>View attendee lists</li>
+                <li><span class="check-icon">✓</span>Manage offers & discounts</li>
+            </ul>
+        </div>
+        {% endif %}
+        
+        <form method="POST" class="auth-form" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="form-errors">{{ form.username.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="form-errors">{{ form.password.errors }}</div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="form-errors" style="margin-bottom: 15px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary btn-block">
+                {% if portal_role == 'ORGANIZER' %}Organizer Login{% else %}Sign In{% endif %}
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>
+        </p>
+
+        <div class="auth-portal-links">
+            {% if portal_role %}
+                <p><a href="{% url 'login' %}">← Back to Customer Login</a></p>
+            {% else %}
+                <p>Organizer or Venue Partner? <a href="{% url 'organizer_login' %}">Organizer Login</a></p>
+                <p>Venue Staff? <a href="{% url 'staff_login' %}">Staff Login</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

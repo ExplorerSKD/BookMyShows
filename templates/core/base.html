@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book movie tickets online - India's premier entertainment booking platform">
+    <title>{% block title %}BookMyShow Clone{% endblock %}</title>
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a href="{% url 'home' %}" class="nav-brand-link">
+                    <span class="brand-logo"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="brand-text">BookMySeat</span>
+                </a>
+            </div>
+            <div class="nav-links nav-right">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'movies' %}">Movies</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'my_bookings' %}">My Bookings</a>
+
+                {% if user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="nav-highlight"><i class="fas fa-tachometer-alt"></i>
+                    Dashboard</a>
+                {% endif %}
+
+                {% if user.profile.role == 'ORGANIZER' %}
+                <a href="{% url 'organizer_dashboard' %}">Organizer Panel</a>
+                {% endif %}
+
+                {% if user.profile.role == 'STAFF' %}
+                <a href="{% url 'staff_scan_ticket' %}">Scan Tickets</a>
+                {% endif %}
+
+                <span class="nav-user">Hello, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+                {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'organizer_login' %}">Organizer Login</a>
+                <a href="{% url 'staff_login' %}">Staff Login</a>
+                <a href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message message-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <p>We provide the best movie experience in town.<br>Book your tickets now and enjoy the show!</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'movies' %}">Movies</a></li>
+                        <li><a href="{% url 'movies' %}">Book Tickets</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Follow Us</h3>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Cinema Booking. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/scripts.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Admin Dashboard - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <div>
+            <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
+            <p class="text-muted">Overview of platform performance and management.</p>
+        </div>
+        <div class="header-actions">
+            <a href="/admin/" class="btn btn-primary" target="_blank">
+                <i class="fas fa-cogs"></i> Django Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="dashboard-grid">
+        <div class="stat-card revenue">
+            <div class="stat-icon">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Revenue</h3>
+                <p class="stat-value">₹{{ total_revenue|floatformat:2 }}</p>
+            </div>
+        </div>
+        <div class="stat-card bookings">
+            <div class="stat-icon">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Bookings</h3>
+                <p class="stat-value">{{ total_bookings }}</p>
+            </div>
+        </div>
+        <div class="stat-card users">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Users</h3>
+                <p class="stat-value">{{ total_users }}</p>
+            </div>
+        </div>
+        <div class="stat-card locks">
+            <div class="stat-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Active Seat Locks</h3>
+                <p class="stat-value">{{ active_seat_locks }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        <!-- Main Content Area -->
+        <div class="dashboard-main">
+            <!-- Recent Bookings -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-history"></i> Recent Bookings</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Movie</th>
+                                <th>Cinema</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in recent_bookings %}
+                            <tr>
+                                <td><span class="badge-id">{{ booking.booking_id|slice:":8" }}</span></td>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-avatar">{{ booking.user.username|slice:":1"|upper }}</div>
+                                        <span>{{ booking.user.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ booking.show.movie.title }}</td>
+                                <td>{{ booking.show.screen.cinema.name }}</td>
+                                <td><span class="amount">₹{{ booking.total_amount }}</span></td>
+                                <td>{{ booking.created_at|date:"d M, h:i A" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No bookings yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Area -->
+        <div class="dashboard-sidebar">
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                </div>
+                <div class="quick-actions-grid">
+                    <a href="/admin/core/movie/add/" class="action-card" target="_blank">
+                        <i class="fas fa-film"></i>
+                        <span>Add Movie</span>
+                    </a>
+                    <a href="/admin/core/show/add/" class="action-card" target="_blank">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Show</span>
+                    </a>
+                    <a href="/admin/core/cinema/add/" class="action-card" target="_blank">
+                        <i class="fas fa-building"></i>
+                        <span>Add Cinema</span>
+                    </a>
+                </div>
+                
+                <!-- Popular Movies -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-line"></i> Popular Movies</h2>
+                    </div>
+                    <ul class="top-list">
+                        {% for movie in popular_movies %}
+                        <li class="top-item">
+                            <span class="rank">{{ forloop.counter }}</span>
+                            <div class="top-info">
+                                <span class="top-title">{{ movie.title }}</span>
+                                <span class="top-meta">{{ movie.ticket_count }} tickets sold</span>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted">No data available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Busiest Cinemas -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-map-marker-alt"></i> Top Cinemas</h2>
+                    </div>
+                    <ul class="top-list">
+                        {% for cinema in busiest_cinemas %}
+                        <li class="top-item">
+                            <span class="rank">{{ forloop.counter }}</span>
+                            <div class="top-info">
+                                <span class="top-title">{{ cinema.name }}</span>
+                                <span class="top-meta">{{ cinema.booking_count }} bookings</span>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted">No data available</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

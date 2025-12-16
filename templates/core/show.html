@@ -1,0 +1,97 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ show.movie.title }} - Select Seats{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="show-detail">
+        <div class="show-header">
+            <h1>{{ show.movie.title }}</h1>
+            <p class="show-meta">
+                {{ show.screen.cinema.name }} - {{ show.screen.name }} |
+                {{ show.date|date:"D, d M Y" }} | {{ show.start_time|time:"h:i A" }}
+            </p>
+        </div>
+
+        <div class="seat-selection">
+            <!-- Left Column: Seat Area -->
+            <div class="seat-area">
+                <div class="screen-indicator">
+                    <div class="screen-label">SCREEN</div>
+                </div>
+
+                <div class="seat-legend">
+                    <div class="legend-item">
+                        <div class="seat-sample available"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample selected"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample locked"></div>
+                        <span>Locked</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample booked"></div>
+                        <span>Booked</span>
+                    </div>
+                </div>
+
+                <div class="seat-grid" id="seatGrid" data-show-id="{{ show.id }}">
+                    {% for row, seats in seat_grid.items %}
+                    <div class="seat-row">
+                        <div class="row-label">{{ row }}</div>
+                        <div class="seats">
+                            {% for seat in seats %}
+                            <div class="seat {{ seat.status }} {{ seat.type|lower }}" data-seat="{{ seat.number }}"
+                                data-type="{{ seat.type }}" data-status="{{ seat.status }}">
+                                {{ seat.number }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column: Booking Summary -->
+            <div class="booking-summary">
+                <div class="summary-content">
+                    <div class="selected-seats">
+                        <h3>Selected Seats: <span id="selectedSeatsText">None</span></h3>
+                        <p id="seatCount">0 seat(s) selected</p>
+                    </div>
+                    <div class="price-summary">
+                        <p>Price per seat: ₹<span id="pricePerSeat">{{ price }}</span></p>
+                        <h3>Total: ₹<span id="totalPrice">0</span></h3>
+                    </div>
+                    <div id="timerDisplay" class="timer-display" style="display: none;">
+                        Time remaining: <span id="timerText">5:00</span>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <button id="lockSeatsBtn" class="btn btn-primary" disabled>Lock Seats</button>
+                    <button id="proceedPaymentBtn" class="btn btn-success" style="display: none;">Proceed to
+                        Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="paymentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2>Processing Payment...</h2>
+        <p id="paymentMessage">Please wait while we initialize payment gateway.</p>
+    </div>
+</div>
+
+<input type="hidden" id="razorpayKey" value="{{ razorpay_key_id }}">
+<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock %}

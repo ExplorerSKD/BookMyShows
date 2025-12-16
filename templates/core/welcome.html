@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Welcome - BookMyShow{% endblock %}
+
+{% block content %}
+<div class="welcome-hero">
+    <div class="container">
+        <div class="welcome-content">
+            <div class="welcome-brand">
+                <i class="fas fa-ticket-alt"></i>
+                <span>BookMyShow</span>
+            </div>
+            <h1>Experience Entertainment<br>Like Never Before</h1>
+            <p class="welcome-subtitle">India's premier platform for booking movies, events, plays, sports and
+                activities. Trusted by millions for seamless entertainment experiences.</p>
+            <div class="welcome-actions">
+                <a href="{% url 'movies' %}" class="btn btn-primary">Get Started</a>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">50M+</div>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5000+</div>
+                    <div class="stat-label">Events Monthly</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Cities Covered</div>
+                </div>
+            </div>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-film"></i></div>
+                <div class="feature-content">
+                    <h3>Latest Movies</h3>
+                    <p>Book tickets for the latest releases across multiple formats including IMAX, 4DX, and Dolby
+                        Atmos.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div class="feature-content">
+                    <h3>Live Events</h3>
+                    <p>Discover concerts, comedy shows, theater performances, and exclusive entertainment events.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-location-dot"></i></div>
+                <div class="feature-content">
+                    <h3>Nearby Venues</h3>
+                    <p>Find and book entertainment options at venues conveniently located near you.</p>
+                </div>
+            </div>
+        </div>
+        <div class="trust-grid">
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="trust-text">
+                    <div class="trust-title">Secure Payments</div>
+                    <div class="trust-desc">100% protected transactions</div>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fas fa-star"></i></div>
+                <div class="trust-text">
+                    <div class="trust-title">Best Prices</div>
+                    <div class="trust-desc">Guaranteed lowest rates</div>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fas fa-headset"></i></div>
+                <div class="trust-text">
+                    <div class="trust-title">24/7 Support</div>
+                    <div class="trust-desc">Always here to help</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="welcome-overlay"></div>
+</div>
+{% endblock %}
